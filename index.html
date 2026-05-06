@@ -175,6 +175,17 @@
       }
     }
 
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    .shake-anim {
+      animation: shake 0.4s ease-in-out;
+    }
+
     .pop-anim {
       animation: pop-anim 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
@@ -299,6 +310,34 @@
       <i data-lucide="sparkles" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity"></i>
     </button>
 
+    <div id="question-container" class="hidden flex-col items-center justify-center z-[50] w-[90%] max-w-[420px] text-center relative mx-auto">
+      <div class="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_30px_80px_rgba(140,123,100,0.15)] rounded-[2rem] p-8 md:p-10 w-full relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[#8c7b64]/40 to-transparent"></div>
+        <div class="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-white">
+          <i data-lucide="heart" class="w-6 h-6 text-[#8c7b64] heartbeat" fill="currentColor"></i>
+        </div>
+        <h3 class="font-mm text-[#4a4742] text-base md:text-[1.1rem] mb-8 leading-relaxed font-medium">ကိုကို့အကြိုက်ဆုံးကြက်ကြော်ဆိုင်နာမည်</h3>
+        <input type="text" id="answer-input" class="bg-white/80 border border-[#8c7b64]/20 rounded-2xl px-6 py-4 w-full text-center font-sans text-[#1a1a19] text-base focus:outline-none focus:border-[#8c7b64]/50 focus:ring-4 focus:ring-[#8c7b64]/10 transition-all shadow-inner backdrop-blur-sm mb-6 placeholder:text-[#8c7b64]/40" placeholder="Type your answer...">
+        <button id="submit-answer-btn" class="w-full font-sans text-[11px] md:text-xs tracking-[0.2em] uppercase text-[#8c7b64] hover:text-[#1a1a19] transition-all duration-500 border border-[#8c7b64]/30 px-8 py-4 rounded-2xl bg-white/60 backdrop-blur-md shadow-sm hover:bg-white/90 hover:shadow-lg hover:-translate-y-1">
+          Answer
+        </button>
+        <div class="h-8 mt-5 flex items-center justify-center">
+          <p id="error-msg" class="hidden font-mm text-[#d48c8c] text-sm transition-opacity duration-300">ဟာ..ဘေဘီသိသင့်တယ်လေ:( စိတ်ကောက်လိုက်မှာနော်!!</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="success-container" class="hidden flex-col items-center justify-center z-[50] w-[90%] max-w-[420px] text-center relative mx-auto">
+      <div class="bg-white/70 backdrop-blur-2xl border border-white/60 shadow-[0_30px_80px_rgba(140,123,100,0.15)] rounded-[2rem] p-8 md:p-10 w-full relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[#8c7b64]/40 to-transparent"></div>
+        <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-white">
+          <i data-lucide="sparkles" class="w-7 h-7 text-[#8c7b64] heartbeat" fill="currentColor"></i>
+        </div>
+        <h3 class="font-mm text-[#4a4742] text-lg md:text-xl mb-3 leading-relaxed font-medium">ဘေဘီအဖြေမှန်သွားပါပြီ!! 🎉</h3>
+        <p class="font-sans text-[#8c7b64]/60 text-[10px] uppercase tracking-[0.3em]">Preparing your surprise...</p>
+      </div>
+    </div>
+
     <div id="countdown-display"
       class="hidden relative z-20 font-serif text-[12rem] md:text-[16rem] text-[#1a1a19] font-light leading-none tracking-tighter drop-shadow-[0_10px_30px_rgba(140,123,100,0.15)]">
       10</div>
@@ -396,6 +435,12 @@
 
   <header
     class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 md:px-6 z-10 pt-20 pb-10">
+    
+    <div class="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
+      <div class="absolute inset-0 bg-[url('./assets/photo8.jpg')] bg-cover bg-center opacity-[0.4] mix-blend-multiply blur-[0px]"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-[#faf8f5]/30 via-[#faf8f5]/80 to-[#faf8f5]"></div>
+    </div>
+
     <div
       class="w-px h-16 md:h-24 bg-gradient-to-b from-transparent to-[#8c7b64]/30 absolute top-0 left-1/2 transform -translate-x-1/2">
     </div>
@@ -474,7 +519,6 @@
       </div>
     </div>
   </section>
-
 
   <section class="py-24 md:py-40 px-6 relative z-10">
     <div class="reveal-element reveal-up text-center mb-16 md:mb-24">
@@ -666,7 +710,7 @@
         if (audio.paused) {
           audio.play().then(() => {
             syncPlayState(true);
-          }).catch(e => console.error("Audio play failed:", e));
+          }).catch(e => console.error(e));
         } else {
           audio.pause();
           syncPlayState(false);
@@ -693,11 +737,27 @@
       const countdownDisplay = document.getElementById('countdown-display');
       const introMonogram = document.getElementById('intro-monogram');
       const introFooter = document.getElementById('intro-footer');
+      const questionContainer = document.getElementById('question-container');
+      const successContainer = document.getElementById('success-container');
+      const answerInput = document.getElementById('answer-input');
+      const submitAnswerBtn = document.getElementById('submit-answer-btn');
+      const errorMsg = document.getElementById('error-msg');
 
       startJourneyBtn.addEventListener('click', () => {
         startJourneyBtn.classList.add('hidden');
         if (introMonogram) introMonogram.style.opacity = '0';
         if (introFooter) introFooter.style.opacity = '0';
+
+        setTimeout(() => {
+          questionContainer.classList.remove('hidden');
+          questionContainer.classList.add('flex', 'pop-anim');
+          answerInput.focus();
+        }, 300);
+      });
+
+      const proceedToCountdown = () => {
+        questionContainer.classList.remove('flex', 'pop-anim');
+        questionContainer.classList.add('hidden');
 
         countdownDisplay.classList.remove('hidden');
         countdownDisplay.classList.add('pop-anim');
@@ -754,7 +814,39 @@
             }, 1100);
           }
         }, 700);
+      };
+
+      const handleAnswerSubmit = () => {
+        const val = answerInput.value.trim().toLowerCase();
+        if (val === 'kfc' || val === 'ကေအက်စီ') {
+          errorMsg.classList.add('hidden');
+          
+          questionContainer.classList.remove('flex', 'pop-anim');
+          questionContainer.classList.add('hidden');
+          
+          successContainer.classList.remove('hidden');
+          successContainer.classList.add('flex', 'pop-anim');
+          
+          setTimeout(() => {
+            successContainer.classList.remove('flex', 'pop-anim');
+            successContainer.classList.add('hidden');
+            proceedToCountdown();
+          }, 2000);
+          
+        } else {
+          errorMsg.classList.remove('hidden');
+          answerInput.classList.remove('shake-anim');
+          void answerInput.offsetWidth;
+          answerInput.classList.add('shake-anim');
+          answerInput.value = '';
+        }
+      };
+
+      submitAnswerBtn.addEventListener('click', handleAnswerSubmit);
+      answerInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleAnswerSubmit();
       });
+
     });
   </script>
 </body>
