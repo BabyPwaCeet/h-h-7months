@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H&H | Seven Months of Poetry</title>
+  <link rel="icon" href="./assets/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Montserrat:wght@200;300;400;500&family=Noto+Sans+Myanmar:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    .font-serif {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .font-sans {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .font-mm {
+      font-family: 'Noto Sans Myanmar', sans-serif;
+    }
+
+    .lucide {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.5;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .reveal-element {
+      transition-property: opacity, transform, filter;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 1200ms;
+      filter: blur(3px);
+    }
+
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .reveal-down {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .is-visible {
+      opacity: 1 !important;
+      transform: translate(0, 0) scale(1) !important;
+      filter: blur(0) !important;
+    }
+
+    .typewriter-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 1em;
+      background-color: currentColor;
+      margin-left: 4px;
+      animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      vertical-align: baseline;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      33% {
+        transform: translateY(-10px) rotate(1.5deg);
+      }
+
+      66% {
+        transform: translateY(8px) rotate(-1deg);
+      }
+    }
+
+    @keyframes slow-spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes heartbeat {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      10%,
+      30% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes pop-anim {
+      0% {
+        transform: scale(0.85);
+        opacity: 0;
+        filter: blur(10px);
+      }
+
+      40% {
+        transform: scale(1.05);
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+      }
+    }
+
+    @keyframes boom {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      30% {
+        transform: scale(1.2);
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      100% {
+        transform: scale(40);
+        opacity: 0;
+        filter: blur(20px);
+      }
+    }
+
+    .pop-anim {
+      animation: pop-anim 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .boom-expand {
+      animation: boom 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+    }
+
+    .floating {
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .slow-spin {
+      animation: slow-spin 40s linear infinite;
+    }
+
+    .heartbeat {
+      animation: heartbeat 3s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .polaroid {
+      background: #fffdfa;
+      padding: 10px 10px 35px 10px;
+      box-shadow: 0 10px 40px rgba(140, 123, 100, 0.06);
+      position: relative;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .polaroid:hover {
+      transform: translateY(-8px) scale(1.02) rotate(0deg) !important;
+      z-index: 20;
+      box-shadow: 0 20px 50px rgba(140, 123, 100, 0.12);
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 1.5px;
+      background: #e5e0d8;
+      overflow: hidden;
+      margin-top: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #8c7b64;
+      width: 0%;
+      transition: width 0.1s linear;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .line-art {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: draw 4s ease-out forwards;
+    }
+
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .saturate-image {
+      filter: saturate(1.1);
+      transition: filter 0.5s ease;
+    }
+
+    .saturate-image:hover {
+      filter: saturate(1.2);
+    }
+
+    .glass-header {
+      background: rgba(255, 253, 250, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(140, 123, 100, 0.1);
+    }
+  </style>
+</head>
+
+<body
+  class="min-h-screen bg-[#faf8f5] text-[#2a2927] font-sans selection:bg-[#8c7b64] selection:text-white overflow-x-hidden">
+
+  <div id="intro-overlay"
+    class="fixed inset-0 z-[100] bg-[#faf8f5] flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out overflow-hidden">
+    <div class="absolute inset-4 border border-[#8c7b64]/20 rounded-sm pointer-events-none z-10"></div>
+    <div class="absolute inset-6 border border-[#8c7b64]/10 rounded-sm pointer-events-none z-10"></div>
+
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-60">
+      <div class="absolute top-[5%] left-[5%] w-[50vw] h-[50vw] bg-[#f0ebd8] rounded-full blur-[100px] slow-spin"></div>
+      <div class="absolute bottom-[5%] right-[5%] w-[60vw] h-[60vw] bg-[#e6dfd1] rounded-full blur-[120px] slow-spin"
+        style="animation-direction:reverse;"></div>
+    </div>
+
+    <svg class="absolute top-1/4 left-[15%] w-24 md:w-32 opacity-[0.1] floating pointer-events-none"
+      viewBox="0 0 100 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="line-art"
+        d="M50 200 C50 150 20 120 20 80 C20 50 40 30 50 20 C60 30 80 50 80 80 C80 120 50 150 50 200 Z M50 80 L30 60 M50 100 L70 80"
+        stroke="#8c7b64" stroke-width="0.5" />
+    </svg>
+
+    <svg class="absolute bottom-1/4 right-[15%] w-28 md:w-40 opacity-[0.08] floating heartbeat pointer-events-none"
+      style="animation-delay:-2s;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="line-art" d="M50 30 A20 20 0 0 1 90 30 C90 60 50 90 50 90 C50 90 10 60 10 30 A20 20 0 0 1 50 30 Z"
+        stroke="#8c7b64" stroke-width="0.5" />
+    </svg>
+
+    <div id="intro-monogram" class="absolute top-16 md:top-24 text-center w-full z-20 transition-opacity duration-700">
+      <span class="font-serif text-2xl md:text-3xl italic tracking-[0.3em] text-[#1a1a19]/80">H&H</span>
+      <div class="w-px h-12 md:h-16 bg-gradient-to-b from-[#8c7b64]/40 to-transparent mx-auto mt-6"></div>
+    </div>
+
+    <button id="start-journey-btn"
+      class="relative z-20 font-sans text-[10px] md:text-xs tracking-[0.4em] uppercase text-[#8c7b64] hover:text-[#1a1a19] transition-all duration-700 border border-[#8c7b64]/30 px-10 py-5 rounded-full bg-white/40 backdrop-blur-md shadow-[0_10px_40px_rgba(140,123,100,0.08)] hover:bg-white/70 hover:shadow-[0_15px_50px_rgba(140,123,100,0.15)] hover:-translate-y-1 flex items-center gap-3 group">
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity"></i>
+      Tap to begin
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity"></i>
+    </button>
+
+    <div id="countdown-display"
+      class="hidden relative z-20 font-serif text-[12rem] md:text-[16rem] text-[#1a1a19] font-light leading-none tracking-tighter drop-shadow-[0_10px_30px_rgba(140,123,100,0.15)]">
+      10</div>
+
+    <div id="intro-footer"
+      class="absolute bottom-16 md:bottom-24 text-center w-full z-20 transition-opacity duration-700">
+      <div class="w-px h-12 md:h-16 bg-gradient-to-t from-[#8c7b64]/40 to-transparent mx-auto mb-6"></div>
+      <span class="font-sans text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-[#8c7b64]/60">A Tale of Us</span>
+    </div>
+  </div>
+
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div
+      class="absolute top-[-5%] left-[-10%] w-[60vw] h-[60vw] bg-[#f0ebd8] rounded-full blur-[100px] opacity-40 slow-spin">
+    </div>
+    <div
+      class="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] bg-[#e6dfd1] rounded-full blur-[120px] opacity-30 slow-spin"
+      style="animation-direction:reverse;"></div>
+
+    <svg class="absolute top-1/4 left-5 md:left-10 w-24 md:w-40 opacity-[0.15] floating" viewBox="0 0 100 200"
+      fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="line-art"
+        d="M50 200 C50 150 20 120 20 80 C20 50 40 30 50 20 C60 30 80 50 80 80 C80 120 50 150 50 200 Z M50 80 L30 60 M50 100 L70 80"
+        stroke="#8c7b64" stroke-width="0.5" />
+    </svg>
+
+    <svg class="absolute top-1/3 right-5 md:right-20 w-32 md:w-48 opacity-[0.12] floating heartbeat"
+      style="animation-delay:-2s;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="line-art" d="M50 30 A20 20 0 0 1 90 30 C90 60 50 90 50 90 C50 90 10 60 10 30 A20 20 0 0 1 50 30 Z"
+        stroke="#8c7b64" stroke-width="0.5" />
+    </svg>
+  </div>
+
+  <nav id="sticky-header"
+    class="fixed top-0 left-0 w-full z-50 px-6 py-4 md:px-8 flex justify-between items-center glass-header transition-transform duration-700 -translate-y-full">
+    <span class="font-serif text-xl md:text-2xl italic tracking-[0.2em] text-[#1a1a19]">H&H</span>
+    <div class="flex items-center gap-4">
+      <div class="w-8 h-8 rounded-full overflow-hidden shadow-sm shrink-0 record-spin"
+        style="animation:slow-spin 8s linear infinite paused;">
+        <img src="./assets/photo2.jpg"
+          alt="keshi cover" class="w-full h-full object-cover saturate-image">
+      </div>
+      <div class="hidden md:block flex-1 min-w-0 mr-4">
+        <h4 class="text-[10px] md:text-[11px] font-medium tracking-widest text-[#1a1a19] mb-0.5 truncate">soft spot</h4>
+        <p class="text-[8px] uppercase tracking-[0.2em] text-[#8c7b64]">keshi</p>
+      </div>
+      <button
+        class="play-toggle-btn w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-[#1a1a19] text-white hover:bg-[#8c7b64] transition-all">
+        <svg class="play-icon-svg" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+          fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <nav
+    class="absolute top-0 left-0 w-full z-40 px-6 py-6 md:px-8 md:py-8 flex justify-between items-start pointer-events-none">
+    <div class="pointer-events-auto reveal-element reveal-down" data-delay="100">
+      <span class="font-serif text-xl md:text-2xl italic tracking-[0.2em] text-[#1a1a19]">H&H</span>
+    </div>
+
+    <div class="pointer-events-auto flex flex-col items-end reveal-element reveal-down" data-delay="200">
+      <div
+        class="bg-white/50 backdrop-blur-md p-3 md:p-4 rounded-xl border border-white/60 w-56 md:w-64 transition-all duration-500 hover:bg-white/70 shadow-sm">
+        <div class="flex items-center gap-3 md:gap-4 mb-2">
+          <div class="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden shadow-sm shrink-0 record-spin"
+            style="animation:slow-spin 8s linear infinite paused;">
+            <img src="./assets/photo2.jpg"
+              alt="keshi cover" class="w-full h-full object-cover saturate-image">
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-[10px] md:text-[11px] font-medium tracking-widest text-[#1a1a19] mb-0.5 truncate">soft spot
+            </h4>
+            <p class="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-[#8c7b64]">keshi</p>
+          </div>
+          <button
+            class="play-toggle-btn w-7 h-7 md:w-8 md:h-8 shrink-0 flex items-center justify-center rounded-full bg-white/80 hover:bg-[#1a1a19] hover:text-white transition-all text-[#1a1a19]">
+            <svg class="play-icon-svg" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"
+              fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </button>
+        </div>
+        <div class="progress-container sync-progress-container">
+          <div class="progress-bar sync-progress-bar"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-[7px] md:text-[8px] tracking-[0.2em] text-[#8c7b64]">
+          <span class="sync-current-time">0:00</span>
+          <span class="sync-total-time">0:00</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <header
+    class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 md:px-6 z-10 pt-20 pb-10">
+    <div
+      class="w-px h-16 md:h-24 bg-gradient-to-b from-transparent to-[#8c7b64]/30 absolute top-0 left-1/2 transform -translate-x-1/2">
+    </div>
+
+    <div class="reveal-element reveal-up mb-8 md:mb-10" data-delay="300">
+      <span
+        class="inline-flex items-center gap-3 md:gap-4 text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-[#8c7b64] font-medium">
+        <span class="w-6 md:w-8 h-px bg-[#8c7b64]/40"></span>
+        Chapter VII
+        <span class="w-6 md:w-8 h-px bg-[#8c7b64]/40"></span>
+      </span>
+    </div>
+
+    <h1
+      class="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-light leading-none md:leading-[0.85] tracking-tighter text-[#1a1a19] mb-6 md:mb-8 relative max-w-[100vw] px-2">
+      <span id="typewriter-text"></span><span id="typewriter-cursor" class="typewriter-cursor"></span><br />
+      <span class="italic text-[#8c7b64]/90 pr-2 md:pr-4">of poetry.</span>
+    </h1>
+
+    <div class="reveal-element reveal-up mt-6 md:mt-8 px-4" data-delay="1500">
+      <p class="text-xs md:text-sm font-serif text-[#5c564d] italic tracking-wide">
+        "I got a soft spot for you."
+      </p>
+
+      <div
+        class="flex items-center justify-center gap-3 md:gap-6 text-[8px] md:text-[10px] tracking-[0.2em] md:tracking-[0.3em] uppercase text-[#2a2927] mt-8 md:mt-12 flex-wrap">
+        <span>Htet Zaw Paing</span>
+        <i data-lucide="heart" class="w-2 h-2 md:w-2.5 md:h-2.5 text-[#8c7b64]/60 heartbeat" fill="currentColor"></i>
+        <span>Hsu Yi Shoon Lae</span>
+      </div>
+    </div>
+
+    <div
+      class="absolute bottom-0 w-px h-16 md:h-24 bg-gradient-to-t from-transparent to-[#8c7b64]/30 left-1/2 transform -translate-x-1/2">
+    </div>
+  </header>
+
+  <section class="py-32 md:py-40 px-6 md:px-12 relative z-10 flex justify-center overflow-hidden">
+    <div class="max-w-2xl w-full text-center relative">
+
+      <h2 class="font-serif text-2xl md:text-4xl italic text-[#1a1a19] mb-12 md:mb-16 reveal-element reveal-up">My
+        Dearest Hsu Yi Shoon Lae,</h2>
+
+      <div
+        class="space-y-6 md:space-y-8 text-[1rem] md:text-[1.1rem] text-[#4a4742] leading-[2.2] md:leading-[2.6] font-mm font-light reveal-element reveal-up text-center md:text-justify"
+        data-delay="100">
+
+        <p class="text-center font-medium text-[#8c7b64] mb-8">
+          Happy <span class="font-serif text-lg">7</span> months monthsary ပါဘေဘီ💕
+        </p>
+
+        <p>
+          ကိုကိုနဲ့ဘေဘီတွဲတာ <span class="font-serif text-lg mx-1">၇</span> လပြည့်တဲ့ <span
+            class="font-serif text-lg mx-1">၇</span> ရက်နေ့လေးးးပေါ့ ကိုကိုတို့ဒီအတောတွင်းပြတ်မလိုဖြစ်တာခနခနဘဲနော် တစ်ယောက်နဲ့တစ်ယောက်မှားတာလွန်တာတွေရှိလဲ ပြန်အဆင်ပြေအောင်ညှိရင်းနေခဲ့ကြသလိုနောင်လဲအမြဲပြဿနာဖြစ်ရင် အဲ့လိုလေးဘဲပြန်အဆင်ပြေသွားကြရင်ကောင်းမယ်
+        </p>
+
+        <p>
+          ကိုကိုလေတကယ်ပြောတာသိလား ကိုကိုဘေဘီ့အတွက်ဆို အမြဲအကောင်းဆုံးဖြစ်အောင် လုပ်ပေးနိုင်အောင် ကောင်းအောင်ဘဲလုပ်နေခဲ့တာပါ တကယ်လို့ မလုပ်ပေးနိုင်ခဲ့ရင်လဲ တကယ်မလုပ်ပေးနိုင်လို့ဆိုတာ ဘေဘီ့ကိုသေချာနားလည်စေချင်တယ်
+        </p>
+
+        <p>
+          ကိုကို့စကားလေးလဲဘေဘီ့ပိုနားထောင်ပြီး တစ်ယောက်နဲ့တစ်ယောက်သံသယကင်းကင်းနဲ့နေသွားကြရင် ကိုကိုတို့ <span
+            class="font-serif text-lg mx-1">၇</span> လကနေ <span class="font-serif text-lg mx-1">၇</span>
+          ကမ္ဘာမကအတူတူရှိသွားလို့ရတယ် အဲ့တာကြောင့် ကိုကိုတို့ တစ်ယောက်ကိုယ်တစ်ယောက်တစ်ယောက်ပိုပြီး ယုံယုံကြည်ကြည်နဲ့
+          တစ်ယောက်နဲ့တစ်ယောက် ပိုနားလည်ကြပြီး အတူတူရှိသွားကြမယ်နော်..
+        </p>
+
+        <div class="pt-12 md:pt-16 flex flex-col items-center">
+          <p class="font-mm text-base md:text-lg text-[#8c7b64] mb-6">Happy <span class="font-serif text-lg">7</span>
+            months monthsary ပါ အများကြီးးးချစ်တယ် ဘေဘီ..🤍</p>
+          <div class="w-10 h-px bg-[#8c7b64]/30 mb-6"></div>
+          <span class="font-serif italic text-lg md:text-xl text-[#1a1a19]">Yours endlessly,</span>
+          <span class="font-sans text-[8px] md:text-[10px] tracking-[0.3em] uppercase mt-3 text-[#1a1a19]/60">Htet Zaw
+            Paing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="py-24 md:py-40 px-6 relative z-10">
+    <div class="reveal-element reveal-up text-center mb-16 md:mb-24">
+      <h2 class="font-serif text-3xl md:text-4xl italic text-[#1a1a19] mb-4">Our Fragments</h2>
+      <div class="w-8 h-px bg-[#8c7b64]/50 mx-auto"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto flex flex-wrap justify-center gap-8 md:gap-16 pt-6 md:pt-10">
+
+      <div class="reveal-element reveal-scale w-full max-w-[240px] md:w-64 polaroid border-b-4 border-[#c9bcae]"
+        style="--r: -2;">
+        <div class="aspect-square overflow-hidden bg-gray-100 mb-4 md:mb-6">
+          <img src="./assets/photo3.jpg"
+            class="w-full h-full object-cover saturate-image" alt="Memory">
+        </div>
+        <p class="text-center font-serif text-lg md:text-xl text-[#8c7b64]/80">✧</p>
+      </div>
+
+      <div class="reveal-element reveal-scale w-full max-w-[240px] md:w-64 polaroid border-b-4 border-[#b5c4b8]"
+        style="--r: 1.5;" data-delay="150">
+        <div class="aspect-square overflow-hidden bg-gray-100 mb-4 md:mb-6">
+          <img src="./assets/photo4.jpg"
+            class="w-full h-full object-cover saturate-image" alt="Memory">
+        </div>
+        <p class="text-center font-serif text-lg md:text-xl text-[#8c7b64]/80">✦</p>
+      </div>
+
+      <div class="reveal-element reveal-scale w-full max-w-[240px] md:w-64 polaroid border-b-4 border-[#c4b5b8]"
+        style="--r: -1;" data-delay="300">
+        <div class="aspect-square overflow-hidden bg-gray-100 mb-4 md:mb-6">
+          <img src="./assets/photo5.jpg"
+            class="w-full h-full object-cover saturate-image" alt="Memory">
+        </div>
+        <p class="text-center font-serif text-lg md:text-[1.2rem] text-[#8c7b64]/80">🤍</p>
+      </div>
+
+      <div class="reveal-element reveal-scale w-full max-w-[240px] md:w-64 polaroid border-b-4 border-[#b5bcc4]"
+        style="--r: 2;" data-delay="450">
+        <div class="aspect-square overflow-hidden bg-gray-100 mb-4 md:mb-6">
+          <img src="./assets/photo6.jpg"
+            class="w-full h-full object-cover saturate-image" alt="Memory">
+        </div>
+        <p class="text-center font-serif text-lg md:text-xl text-[#8c7b64]/80">✨</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer
+    class="bg-[#121211] text-[#faf8f5] py-24 md:py-32 px-6 text-center relative z-10 border-t border-[#8c7b64]/20">
+    <div class="reveal-element reveal-up relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+
+      <svg class="w-8 h-8 md:w-10 md:h-10 mb-8 md:mb-10 opacity-70 floating heartbeat" viewBox="0 0 100 100" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 30 A20 20 0 0 1 90 30 C90 60 50 90 50 90 C50 90 10 60 10 30 A20 20 0 0 1 50 30 Z" stroke="#8c7b64"
+          stroke-width="1.5" />
+      </svg>
+
+      <h2 class="font-serif text-xl md:text-3xl italic leading-relaxed mb-12 md:mb-16 text-[#e6dfd1]/80">
+        I don't want to be right<br />
+        If it means that I'm without you.
+      </h2>
+
+      <p class="text-[8px] md:text-[9px] tracking-[0.4em] uppercase text-[#8c7b64] font-medium mb-3 md:mb-4">
+        Happy 7 Months, Hsu Yi Shoon Lae.
+      </p>
+      <p class="text-[7px] md:text-[8px] tracking-[0.2em] mt-8 md:mt-10 text-[#faf8f5]/30 uppercase font-sans">
+        Made with love by Htet Zaw Paing - 7/May-2026
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+
+      const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.reveal-element').forEach((el) => {
+        const delay = el.getAttribute('data-delay');
+        if (delay) el.style.transitionDelay = `${delay}ms`;
+
+        const polaroidR = el.style.getPropertyValue('--r');
+        if (polaroidR) {
+          if (window.innerWidth > 768) {
+            el.style.transform = `rotate(${polaroidR}deg)`;
+          }
+        }
+        observer.observe(el);
+      });
+
+      const phrases = ["Seven Months", "214 Days", "Endless Soft Spots", "Our Eternity"];
+      const typeElement = document.getElementById('typewriter-text');
+      let phraseIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+
+      function dynamicType() {
+        const currentPhrase = phrases[phraseIndex];
+        if (isDeleting) {
+          typeElement.innerHTML = currentPhrase.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          typeElement.innerHTML = currentPhrase.substring(0, charIndex + 1);
+          charIndex++;
+        }
+
+        let typeSpeed = isDeleting ? 40 : 100;
+        if (!isDeleting) typeSpeed += Math.random() * 40;
+
+        if (!isDeleting && charIndex === currentPhrase.length) {
+          typeSpeed = 3000;
+          isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          typeSpeed = 800;
+        }
+        setTimeout(dynamicType, typeSpeed);
+      }
+
+      const stickyHeader = document.getElementById('sticky-header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 80) {
+          stickyHeader.classList.remove('-translate-y-full');
+        } else {
+          stickyHeader.classList.add('-translate-y-full');
+        }
+      });
+
+      const audio = new Audio('./assets/keshi-soft-spot.mp3');
+      audio.preload = "auto";
+
+      const playToggleBtns = document.querySelectorAll('.play-toggle-btn');
+      const recordSpins = document.querySelectorAll('.record-spin');
+      const progressBars = document.querySelectorAll('.sync-progress-bar');
+      const timeDisplays = document.querySelectorAll('.sync-current-time');
+      const totalDisplays = document.querySelectorAll('.sync-total-time');
+      const progressContainers = document.querySelectorAll('.sync-progress-container');
+
+      const playSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+      const pauseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+
+      const formatTime = (seconds) => {
+        if (isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      };
+
+      audio.addEventListener('loadedmetadata', () => {
+        totalDisplays.forEach(display => display.innerText = formatTime(audio.duration));
+      });
+
+      audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+          const percent = (audio.currentTime / audio.duration) * 100;
+          progressBars.forEach(bar => bar.style.width = `${percent}%`);
+          timeDisplays.forEach(display => display.innerText = formatTime(audio.currentTime));
+        }
+      });
+
+      const syncPlayState = (playing) => {
+        if (playing) {
+          playToggleBtns.forEach(btn => btn.innerHTML = pauseSvg);
+          recordSpins.forEach(spin => spin.style.animationPlayState = 'running');
+        } else {
+          playToggleBtns.forEach(btn => btn.innerHTML = playSvg);
+          recordSpins.forEach(spin => spin.style.animationPlayState = 'paused');
+        }
+      };
+
+      audio.addEventListener('ended', () => {
+        syncPlayState(false);
+        progressBars.forEach(bar => bar.style.width = `0%`);
+        timeDisplays.forEach(display => display.innerText = "0:00");
+        audio.currentTime = 0;
+      });
+
+      const togglePlayState = () => {
+        if (audio.paused) {
+          audio.play().then(() => {
+            syncPlayState(true);
+          }).catch(e => console.error("Audio play failed:", e));
+        } else {
+          audio.pause();
+          syncPlayState(false);
+        }
+      };
+
+      playToggleBtns.forEach(btn => {
+        btn.addEventListener('click', togglePlayState);
+      });
+
+      progressContainers.forEach(container => {
+        container.addEventListener('click', (e) => {
+          const rect = container.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percent = clickX / rect.width;
+          if (audio.duration) {
+            audio.currentTime = percent * audio.duration;
+          }
+        });
+      });
+
+      const introOverlay = document.getElementById('intro-overlay');
+      const startJourneyBtn = document.getElementById('start-journey-btn');
+      const countdownDisplay = document.getElementById('countdown-display');
+      const introMonogram = document.getElementById('intro-monogram');
+      const introFooter = document.getElementById('intro-footer');
+
+      startJourneyBtn.addEventListener('click', () => {
+        startJourneyBtn.classList.add('hidden');
+        if (introMonogram) introMonogram.style.opacity = '0';
+        if (introFooter) introFooter.style.opacity = '0';
+
+        countdownDisplay.classList.remove('hidden');
+        countdownDisplay.classList.add('pop-anim');
+
+        let count = 10;
+        const countInterval = setInterval(() => {
+          count--;
+          if (count > 0) {
+            countdownDisplay.classList.remove('pop-anim');
+            void countdownDisplay.offsetWidth;
+            countdownDisplay.innerText = count;
+            countdownDisplay.classList.add('pop-anim');
+          }
+          if (count === 0) {
+            clearInterval(countInterval);
+
+            countdownDisplay.innerText = "✨";
+            countdownDisplay.style.animation = 'none';
+            void countdownDisplay.offsetWidth;
+            countdownDisplay.classList.add('boom-expand');
+
+            const colors = ['#8c7b64', '#e6dfd1', '#1a1a19', '#faf8f5'];
+            for (let i = 0; i < 40; i++) {
+              const p = document.createElement('div');
+              p.className = 'absolute w-2 h-2 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[110]';
+              p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+              p.style.boxShadow = `0 0 10px ${p.style.backgroundColor}`;
+              introOverlay.appendChild(p);
+
+              const angle = Math.random() * Math.PI * 2;
+              const velocity = window.innerWidth > 768 ? (200 + Math.random() * 400) : (100 + Math.random() * 200);
+              const tx = Math.cos(angle) * velocity;
+              const ty = Math.sin(angle) * velocity;
+
+              p.animate([
+                { transform: `translate(-50%, -50%) scale(${Math.random() * 1.5 + 0.5})`, opacity: 1 },
+                { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+              ], {
+                duration: 1000 + Math.random() * 500,
+                easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+              });
+            }
+
+            setTimeout(() => {
+              introOverlay.style.opacity = '0';
+              setTimeout(() => {
+                introOverlay.remove();
+                setTimeout(dynamicType, 300);
+              }, 1000);
+
+              audio.play().then(() => {
+                syncPlayState(true);
+              }).catch(e => console.error(e));
+            }, 1100);
+          }
+        }, 700);
+      });
+    });
+  </script>
+</body>
+
+</html>
