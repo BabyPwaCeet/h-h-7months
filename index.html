@@ -4,16 +4,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H&H | Seven Months of Poetry</title>
+  <title>H & H | Seven Months of Poetry</title>
   <link rel="icon" href="./assets/favicon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Montserrat:wght@200;300;400;500&family=Noto+Sans+Myanmar:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <style>
+    /* Prevent scrolling during the intro phase */
+    .no-scroll {
+      overflow: hidden !important;
+      height: 100vh !important;
+      touch-action: none;
+    }
+
     .font-serif {
       font-family: 'Cormorant Garamond', serif;
     }
@@ -272,7 +279,7 @@
 </head>
 
 <body
-  class="min-h-screen bg-[#faf8f5] text-[#2a2927] font-sans selection:bg-[#8c7b64] selection:text-white overflow-x-hidden">
+  class="min-h-screen bg-[#faf8f5] text-[#2a2927] font-sans selection:bg-[#8c7b64] selection:text-white overflow-x-hidden no-scroll">
 
   <div id="intro-overlay"
     class="fixed inset-0 z-[100] bg-[#faf8f5] flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out overflow-hidden">
@@ -427,7 +434,7 @@
         </div>
         <div class="flex justify-between mt-2 text-[7px] md:text-[8px] tracking-[0.2em] text-[#8c7b64]">
           <span class="sync-current-time">0:00</span>
-          <span class="sync-total-time">0:00</span>
+          <span class="sync-total-time">0:00</span> 
         </div>
       </div>
     </div>
@@ -595,6 +602,31 @@
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
 
+      // --- Initialization states ---
+      let isAudioUnlocked = false;
+      let isIntroFinished = false; // Flags when scroll behavior starts
+      const audio = new Audio('./assets/keshi-soft-spot.mp3');
+      audio.preload = "auto";
+
+      // --- Audio Unlock Trick for strict mobile browsers ---
+      // We attach a silent play initialization to any early user interaction
+      function unlockAudioContext() {
+        if (isAudioUnlocked) return;
+        audio.play().then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          isAudioUnlocked = true;
+        }).catch(err => console.log("Audio unlock initializing..."));
+        
+        // Remove after single successful or attempted interaction
+        document.removeEventListener('click', unlockAudioContext);
+        document.removeEventListener('touchstart', unlockAudioContext);
+      }
+      document.addEventListener('click', unlockAudioContext);
+      document.addEventListener('touchstart', unlockAudioContext);
+
+
+      // --- Observer for fade-in animations ---
       const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
       const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -618,6 +650,7 @@
         observer.observe(el);
       });
 
+      // --- Typewriter Effect ---
       const phrases = ["Seven Months", "214 Days", "Endless Soft Spots", "Our Eternity"];
       const typeElement = document.getElementById('typewriter-text');
       let phraseIndex = 0;
@@ -648,6 +681,7 @@
         setTimeout(dynamicType, typeSpeed);
       }
 
+      // --- Header Navigation & Audio Controls ---
       const stickyHeader = document.getElementById('sticky-header');
       window.addEventListener('scroll', () => {
         if (window.scrollY > 80) {
@@ -656,9 +690,6 @@
           stickyHeader.classList.add('-translate-y-full');
         }
       });
-
-      const audio = new Audio('./assets/keshi-soft-spot.mp3');
-      audio.preload = "auto";
 
       const playToggleBtns = document.querySelectorAll('.play-toggle-btn');
       const recordSpins = document.querySelectorAll('.record-spin');
@@ -717,9 +748,7 @@
         }
       };
 
-      playToggleBtns.forEach(btn => {
-        btn.addEventListener('click', togglePlayState);
-      });
+      playToggleBtns.forEach(btn => btn.addEventListener('click', togglePlayState));
 
       progressContainers.forEach(container => {
         container.addEventListener('click', (e) => {
@@ -732,6 +761,7 @@
         });
       });
 
+      // --- Intro Sequence logic ---
       const introOverlay = document.getElementById('intro-overlay');
       const startJourneyBtn = document.getElementById('start-journey-btn');
       const countdownDisplay = document.getElementById('countdown-display');
@@ -805,12 +835,19 @@
               introOverlay.style.opacity = '0';
               setTimeout(() => {
                 introOverlay.remove();
+                
+                // UNLOCK SCROLL: Remove no-scroll constraints and initiate main actions
+                document.body.classList.remove('no-scroll');
+                isIntroFinished = true;
+                resetIdleTimer(); // Kickoff lazy scrolling tracker
+                
                 setTimeout(dynamicType, 300);
               }, 1000);
 
+              // Guaranteed Audio Play after countdown
               audio.play().then(() => {
                 syncPlayState(true);
-              }).catch(e => console.error(e));
+              }).catch(e => console.error("Audio playback interrupted", e));
             }, 1100);
           }
         }, 700);
@@ -845,6 +882,87 @@
       submitAnswerBtn.addEventListener('click', handleAnswerSubmit);
       answerInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleAnswerSubmit();
+      });
+
+      // --- Idle Auto-Scroll Logic ---
+      let idleTimer = null;
+      let autoScrollAnimation = null;
+      let isAutoScrolling = false;
+      let scrollDirection = 'down'; 
+      
+      const IDLE_TIMEOUT = 8000;
+      const SCROLL_SPEED = 0.6;
+
+      function startAutoScroll() {
+        if (isAutoScrolling) return;
+        isAutoScrolling = true;
+
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (window.scrollY >= maxScroll - 10) {
+            scrollDirection = 'up'; 
+        } else if (window.scrollY <= 10) {
+            scrollDirection = 'down';
+        }
+
+        function scrollFrame() {
+          if (!isAutoScrolling) return;
+
+          const currentScroll = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+          if (scrollDirection === 'down') {
+            window.scrollBy(0, SCROLL_SPEED);
+            // Check if we hit the bottom
+            if (currentScroll >= docHeight - 1) {
+              scrollDirection = 'up';
+              stopAutoScroll();
+              resetIdleTimer();
+              return;
+            }
+          } else {
+            window.scrollBy(0, -SCROLL_SPEED);
+            // Check if we hit the top
+            if (currentScroll <= 1) {
+              scrollDirection = 'down';
+              stopAutoScroll();
+              resetIdleTimer();
+              return;
+            }
+          }
+          // Continue loop
+          autoScrollAnimation = requestAnimationFrame(scrollFrame);
+        }
+        
+        // Start recursive animation
+        autoScrollAnimation = requestAnimationFrame(scrollFrame);
+      }
+
+      function stopAutoScroll() {
+        isAutoScrolling = false;
+        if (autoScrollAnimation) {
+          cancelAnimationFrame(autoScrollAnimation);
+          autoScrollAnimation = null;
+        }
+      }
+
+      function resetIdleTimer() {
+        if (!isIntroFinished) return;
+        
+        // Stop any active auto-scrolling on direct interaction
+        stopAutoScroll();
+
+        if (idleTimer) clearTimeout(idleTimer);
+        
+        // Restart the 8 second countdown
+        idleTimer = setTimeout(() => {
+          startAutoScroll();
+        }, IDLE_TIMEOUT);
+      }
+
+      const interactionEvents = ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'keydown', 'wheel'];
+      interactionEvents.forEach(evt => {
+        window.addEventListener(evt, resetIdleTimer, { passive: true });
       });
 
     });
